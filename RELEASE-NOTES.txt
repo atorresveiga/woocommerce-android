@@ -1,8 +1,17 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
-7.7
+7.8
 -----
 
+
+7.7
+-----
+- [***] In-Person Payments: Added support for accepting In-Person Card Payments in the US
+- [*] Help & Support: A site's System Status Report can now be found, copied, and shared from Settings > Help & Support > System Status Report [https://github.com/woocommerce/woocommerce-android/pull/4890]
+
+7.6.1
+-----
+- [*] Reverted the support for multi store notifications due to a bug with new order notifications not being received.
 
 7.6
 -----
