@@ -7,7 +7,6 @@ interface AppSettingsContract {
     interface Presenter : BasePresenter<View> {
         fun logout()
         fun clearCardReaderData()
-        fun isEligibleForIPP(): Boolean
         fun updateOnboardingState()
         fun userIsLoggedIn(): Boolean
         fun getAccountDisplayName(): String

@@ -1,5 +1,6 @@
 package com.woocommerce.android.ui.prefs
 
+import com.woocommerce.android.AppPrefs
 import com.woocommerce.android.cardreader.CardReaderManager
 import com.woocommerce.android.ui.prefs.cardreader.onboarding.CardReaderOnboardingChecker
 import com.woocommerce.android.ui.prefs.cardreader.onboarding.CardReaderOnboardingState
@@ -26,10 +27,6 @@ class AppSettingsPresenter @Inject constructor(
 ) : AppSettingsContract.Presenter {
     private var appSettingsView: AppSettingsContract.View? = null
 
-    var onboardingState: CardReaderOnboardingState? = null
-        get() = field
-        private set
-
     override fun takeView(view: AppSettingsContract.View) {
         dispatcher.register(this)
         appSettingsView = view
@@ -38,11 +35,10 @@ class AppSettingsPresenter @Inject constructor(
 
     override fun updateOnboardingState() {
         coroutineScope.launch {
-            onboardingState = onboardingChecker.getOnboardingState()
+            val onboardingState = onboardingChecker.getOnboardingState()
+            AppPrefs.isEligibleForIPP = onboardingState == CardReaderOnboardingState.OnboardingCompleted
         }
     }
-
-    override fun isEligibleForIPP() = onboardingState == CardReaderOnboardingState.OnboardingCompleted
 
     override fun dropView() {
         dispatcher.unregister(this)

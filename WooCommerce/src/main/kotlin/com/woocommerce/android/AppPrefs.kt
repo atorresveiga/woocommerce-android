@@ -42,6 +42,7 @@ object AppPrefs {
         IS_PRODUCTS_FEATURE_ENABLED,
         IS_PRODUCT_ADDONS_ENABLED,
         IS_QUICK_ORDER_ENABLED,
+        IS_ELIGIBLE_FOR_IPP,
         LOGIN_USER_BYPASSED_JETPACK_REQUIRED,
         SELECTED_ORDER_LIST_TAB_POSITION,
         IMAGE_OPTIMIZE_ENABLED,
@@ -150,6 +151,10 @@ object AppPrefs {
     var isQuickOrderEnabled: Boolean
         get() = getBoolean(DeletablePrefKey.IS_QUICK_ORDER_ENABLED, false)
         set(value) = setBoolean(DeletablePrefKey.IS_QUICK_ORDER_ENABLED, value)
+
+    var isEligibleForIPP: Boolean
+        get() = getBoolean(DeletablePrefKey.IS_ELIGIBLE_FOR_IPP, false)
+        set(value) = setBoolean(DeletablePrefKey.IS_ELIGIBLE_FOR_IPP, value)
 
     fun getLastAppVersionCode(): Int {
         return getDeletableInt(UndeletablePrefKey.LAST_APP_VERSION_CODE)
