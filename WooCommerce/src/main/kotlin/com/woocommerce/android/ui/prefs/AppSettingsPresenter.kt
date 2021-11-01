@@ -1,6 +1,8 @@
 package com.woocommerce.android.ui.prefs
 
 import com.woocommerce.android.cardreader.CardReaderManager
+import com.woocommerce.android.ui.prefs.cardreader.onboarding.CardReaderOnboardingChecker
+import com.woocommerce.android.ui.prefs.cardreader.onboarding.CardReaderOnboardingState
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -18,15 +20,29 @@ class AppSettingsPresenter @Inject constructor(
     private val dispatcher: Dispatcher,
     private val accountStore: AccountStore,
     private val cardReaderManager: CardReaderManager,
+    private val onboardingChecker: CardReaderOnboardingChecker,
     @Suppress("unused") // We keep it here to make sure that the store is subscribed to the event bus
     private val notificationStore: NotificationStore
 ) : AppSettingsContract.Presenter {
     private var appSettingsView: AppSettingsContract.View? = null
 
+    var onboardingState: CardReaderOnboardingState? = null
+        get() = field
+        private set
+
     override fun takeView(view: AppSettingsContract.View) {
         dispatcher.register(this)
         appSettingsView = view
+        updateOnboardingState()
     }
+
+    override fun updateOnboardingState() {
+        coroutineScope.launch {
+            onboardingState = onboardingChecker.getOnboardingState()
+        }
+    }
+
+    override fun isEligibleForIPP() = onboardingState == CardReaderOnboardingState.OnboardingCompleted
 
     override fun dropView() {
         dispatcher.unregister(this)
