@@ -1,6 +1,5 @@
 package com.woocommerce.android.ui.main
 
-import android.animation.ValueAnimator
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
@@ -11,7 +10,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
@@ -119,20 +117,14 @@ class MainActivity :
         }
     }
 
-    private val showSubtitleAnimator by lazy {
-        createCollapsingToolbarMarginBottomAnimator(
-            from = resources.getDimensionPixelSize(dimen.expanded_toolbar_bottom_margin),
-            to = resources.getDimensionPixelSize(dimen.expanded_toolbar_bottom_margin_with_subtitle),
+    private val titleAnimationsHelper by lazy {
+        SubTitleAnimationsHelper(
+            collapsedMargin = resources.getDimensionPixelSize(dimen.expanded_toolbar_bottom_margin),
+            expandedMargin = resources.getDimensionPixelSize(dimen.expanded_toolbar_bottom_margin_with_subtitle),
             duration = 200L
-        )
-    }
-
-    private val hideSubtitleAnimator by lazy {
-        createCollapsingToolbarMarginBottomAnimator(
-            from = resources.getDimensionPixelSize(dimen.expanded_toolbar_bottom_margin_with_subtitle),
-            to = resources.getDimensionPixelSize(dimen.expanded_toolbar_bottom_margin),
-            duration = 200L
-        )
+        ) {
+            binding.collapsingToolbar.expandedTitleMarginBottom = it.animatedValue as Int
+        }
     }
 
     // TODO: Using deprecated ProgressDialog temporarily - a proper post-login experience will replace this
@@ -486,22 +478,11 @@ class MainActivity :
         }
     }
 
-    private fun createCollapsingToolbarMarginBottomAnimator(from: Int, to: Int, duration: Long): ValueAnimator {
-        return ValueAnimator.ofInt(from, to)
-            .also { valueAnimator ->
-                valueAnimator.duration = duration
-                valueAnimator.interpolator = AccelerateDecelerateInterpolator()
-                valueAnimator.addUpdateListener {
-                    binding.collapsingToolbar.expandedTitleMarginBottom = it.animatedValue as Int
-                }
-            }
-    }
-
     private fun removeSubtitle() {
         binding.appBarLayout.removeOnOffsetChangedListener(appBarOffsetListener)
         if (binding.toolbarSubtitle.visibility == View.GONE) return
         binding.toolbarSubtitle.collapse(duration = 200L)
-        hideSubtitleAnimator.start()
+        titleAnimationsHelper.hideSubtitleAnimator.start()
     }
 
     private fun setFadingSubtitleOnCollapsingToolbar(subtitle: CharSequence) {
@@ -509,7 +490,7 @@ class MainActivity :
         binding.toolbarSubtitle.text = subtitle
         if (binding.toolbarSubtitle.visibility == View.VISIBLE) return
         binding.toolbarSubtitle.expand(duration = 200L)
-        showSubtitleAnimator.start()
+        titleAnimationsHelper.showSubtitleAnimator.start()
     }
 
     fun enableToolbarExpansion(enable: Boolean) {
